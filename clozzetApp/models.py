@@ -8,26 +8,27 @@ from django.contrib.auth.models import AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email,password=None, **extra_filds):
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email must be set')
-        email=self.normalize_email(email)
-        user=self.model(email=email, **extra_filds)
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
-    def create_superuser(self,email,password=None, **extra_filds):
-        extra_filds.setdefault('is_staff',True)
-        extra_filds.setdefault('is_superuser',True)
-        return self.create_user(self,email,password, **extra_filds)
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email=email, password=password, **extra_fields)
 
 class User(AbstractBaseUser):
-    name=models.CharField(max_length=100)
-    email=models.EmailField(unique=True)
-    phone_number=models.IntegerField()
-    address=models.CharField()
-    is_active=models.BooleanField(default=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    # make phone_number optional (null/blank) and use CharField to preserve leading zeros
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True)
+    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['name']

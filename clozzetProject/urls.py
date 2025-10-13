@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from clozzetApp.views import UseLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('clozzetApp.urls')),
+    # expose a top-level login route so /login/ works (useful during development)
+    path('login/', UseLoginView.as_view(), name='top-level-login'),
 
     
 ]
