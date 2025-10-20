@@ -83,7 +83,13 @@ class UseLoginView(APIView):
             if user is not None:
                 refresh = RefreshToken.for_user(user)
                 access = refresh.access_token
-                return Response({'access_token': str(access), 'refresh_token': str(refresh)})
+                return Response({'access_token': str(access),
+                                 'refresh_token': str(refresh),
+                                 'userData':{
+                                     'name':user.name,
+                                     'is_admin':user.is_staff
+                                 }
+                                 })
             return Response({'message': 'invalid credentials'}, status=401)
         return Response(serializer.errors, status=400)
 
